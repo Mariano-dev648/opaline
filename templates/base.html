@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Opaline — Bijuterias e Folheados com elegância e sofisticação">
+    <title>{% block title %}Opaline — Bijuterias & Folheados{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/opaline.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+    <div class="header-top">
+        <span>✨ Frete grátis acima de R$ 199 | Parcele em até 3x sem juros</span>
+    </div>
+    <nav class="navbar">
+        <a href="{% url 'produtos:home' %}" class="logo">
+            <span class="logo-o">O</span>paline
+        </a>
+        <ul class="nav-links">
+            <li><a href="{% url 'produtos:catalogo' %}">Catálogo</a></li>
+            <li><a href="#">Colares</a></li>
+            <li><a href="#">Brincos</a></li>
+            <li><a href="#">Pulseiras</a></li>
+            <li><a href="#">Anéis</a></li>
+        </ul>
+        <div class="nav-icons">
+            <a href="{% url 'clientes:login' %}"><i class="fa fa-user"></i></a>
+            <a href="{% url 'pedidos:carrinho' %}"><i class="fa fa-bag-shopping"></i> <span class="cart-count">0</span></a>
+        </div>
+    </nav>
+</header>
+
+<!-- CONTEÚDO -->
+<main>
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    {% block content %}{% endblock %}
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <h3><span class="logo-o">O</span>paline</h3>
+            <p>Bijuterias e folheados que realçam sua beleza e elegância.</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-whatsapp"></i></a>
+                <a href="#"><i class="fab fa-facebook"></i></a>
+            </div>
+        </div>
+        <div class="footer-links">
+            <h4>Institucional</h4>
+            <ul>
+                <li><a href="#">Sobre nós</a></li>
+                <li><a href="#">Política de troca</a></li>
+                <li><a href="#">Prazo de entrega</a></li>
+            </ul>
+        </div>
+        <div class="footer-links">
+            <h4>Atendimento</h4>
+            <ul>
+                <li><a href="#">WhatsApp</a></li>
+                <li><a href="#">E-mail</a></li>
+                <li><a href="#">FAQ</a></li>
+            </ul>
+        </div>
+        <div class="footer-links">
+            <h4>Pagamentos</h4>
+            <div class="payment-icons">
+                <span>Pix</span>
+                <span>Cartão</span>
+                <span>Boleto</span>
+            </div>
+            <p class="seguro-txt"><i class="fa fa-lock"></i> Compra 100% segura</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>© 2025 Opaline. Todos os direitos reservados.</p>
+    </div>
+</footer>
+
+<script src="{% static 'js/opaline.js' %}"></script>
+</body>
+</html>

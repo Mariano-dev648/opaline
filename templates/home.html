@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Opaline — Bijuterias & Folheados de Luxo Acessível{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-content">
+        <span class="hero-badge">✨ Nova Coleção 2025</span>
+        <h1>Elegância que <em>transforma</em> seu estilo</h1>
+        <p>Bijuterias e folheados exclusivos para a mulher que sabe o que quer. Peças que valorizam sua beleza com sofisticação e durabilidade.</p>
+        <a href="{% url 'produtos:catalogo' %}" class="btn-primary">Ver Catálogo</a>
+        <a href="#destaques" class="btn-outline">Destaques</a>
+    </div>
+    <div class="hero-image">
+        <img src="{% static 'img/hero.jpg' %}" alt="Mulher elegante com joias Opaline" style="max-width:500px; border-radius: 2px;">
+    </div>
+</section>
+
+<!-- CONFIANÇA -->
+<section class="confianca">
+    <div class="confianca-item">
+        <i class="fa fa-lock"></i>
+        <h4>Compra Segura</h4>
+        <p>Seus dados protegidos com criptografia</p>
+    </div>
+    <div class="confianca-item">
+        <i class="fa fa-pix"></i>
+        <h4>Pix & Cartão</h4>
+        <p>Pagamento via Pix com desconto especial</p>
+    </div>
+    <div class="confianca-item">
+        <i class="fa fa-truck"></i>
+        <h4>Entrega Garantida</h4>
+        <p>Rastreamento em tempo real</p>
+    </div>
+    <div class="confianca-item">
+        <i class="fa fa-rotate-left"></i>
+        <h4>Troca Fácil</h4>
+        <p>7 dias para troca ou devolução</p>
+    </div>
+</section>
+
+<!-- DESTAQUES -->
+<section class="section" id="destaques">
+    <h2 class="section-title">Peças em Destaque</h2>
+    <p class="section-subtitle">SELEÇÃO ESPECIAL PARA VOCÊ</p>
+    <div class="divisor"></div>
+    <div class="produtos-grid">
+        {% for produto in destaques %}
+        <div class="produto-card">
+            {% if produto.mais_vendido %}
+            <span class="produto-badge">Mais Vendido</span>
+            {% endif %}
+            <a href="{% url 'produtos:detalhe' produto.slug %}">
+                <img src="{{ produto.imagem_principal.url }}" alt="{{ produto.nome }}">
+            </a>
+            <div class="produto-info">
+                <p style="font-size:12px; color:var(--cinza); letter-spacing:1px; text-transform:uppercase;">{{ produto.categoria }}</p>
+                <h3 class="produto-nome">{{ produto.nome }}</h3>
+                <p class="produto-preco">R$ {{ produto.preco_atual }}</p>
+                <a href="{% url 'produtos:detalhe' produto.slug %}" class="btn-primary" style="margin-top:15px; padding: 12px 25px; font-size:12px;">Ver Detalhes</a>
+            </div>
+        </div>
+        {% empty %}
+        <p style="text-align:center; color:var(--cinza); grid-column: 1/-1;">Em breve novos produtos chegando ✨</p>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- BANNER INSTITUCIONAL -->
+<section style="background: linear-gradient(135deg, #2C2C2C, #1a1a1a); padding: 80px 60px; text-align:center; color:white;">
+    <h2 style="font-family:var(--fonte-titulo); font-size:46px; font-weight:300; margin-bottom:15px;">
+        Folheadas a <span style="color:var(--dourado)">Ouro 18k</span>
+    </h2>
+    <p style="color:#aaa; font-size:15px; max-width:500px; margin:0 auto 35px; line-height:1.8;">
+        Todas as nossas peças são folheadas a ouro 18k com garantia de qualidade e durabilidade.
+    </p>
+    <a href="{% url 'produtos:catalogo' %}" class="btn-primary">Explorar Coleção</a>
+</section>
+
+{% endblock %}
