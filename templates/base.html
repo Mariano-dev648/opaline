@@ -27,6 +27,14 @@
             <li><a href="#">Pulseiras</a></li>
             <li><a href="#">Anéis</a></li>
         </ul>
+<form method="get" action="{% url 'produtos:catalogo' %}" style="display:flex; align-items:center; border:1px solid var(--dourado-claro); overflow:hidden;">
+    <input type="text" name="q" placeholder="Buscar joias..."
+        style="padding:8px 15px; border:none; font-family:var(--fonte-corpo); font-size:13px; outline:none; width:200px; background:transparent;">
+    <button type="submit"
+        style="padding:8px 15px; background:var(--dourado); border:none; cursor:pointer; color:white;">
+        <i class="fa fa-search"></i>
+    </button>
+</form>
         <div class="nav-icons">
             <a href="{% url 'clientes:login' %}"><i class="fa fa-user"></i></a>
             <a href="{% url 'pedidos:carrinho' %}">

@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ produto.nome }} — Opaline{% endblock %}
+
+{% block content %}
+
+<section class="section">
+
+    <!-- BREADCRUMB -->
+    <p style="font-size:12px; color:var(--cinza); margin-bottom:30px; letter-spacing:1px;">
+        <a href="{% url 'produtos:home' %}" style="color:var(--cinza); text-decoration:none;">Home</a>
+        &nbsp;/&nbsp;
+        <a href="{% url 'produtos:catalogo' %}" style="color:var(--cinza); text-decoration:none;">Catálogo</a>
+        &nbsp;/&nbsp;
+        <span style="color:var(--dourado);">{{ produto.nome }}</span>
+    </p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:start;">
+
+        <!-- GALERIA -->
+        <div>
+            <div style="margin-bottom:15px; overflow:hidden;">
+                <img id="imagem-principal"
+                     src="{{ produto.imagem_principal.url }}"
+                     alt="{{ produto.nome }}"
+                     style="width:100%; height:520px; object-fit:cover; border-radius:2px; transition:transform 0.4s;"
+                     onmouseover="this.style.transform='scale(1.03)'"
+                     onmouseout="this.style.transform='scale(1)'">
+            </div>
+            {% if produto.imagens.all %}
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <img src="{{ produto.imagem_principal.url }}"
+                     onclick="trocarImagem(this.src)"
+                     style="width:80px; height:80px; object-fit:cover; cursor:pointer; border:2px solid var(--dourado); padding:2px;">
+                {% for img in produto.imagens.all %}
+                <img src="{{ img.imagem.url }}"
+                     onclick="trocarImagem(this.src)"
+                     style="width:80px; height:80px; object-fit:cover; cursor:pointer; border:2px solid transparent; padding:2px; transition:border 0.3s;"
+                     onmouseover="this.style.borderColor='var(--dourado)'"
+                     onmouseout="this.style.borderColor='transparent'">
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- INFORMAÇÕES -->
+        <div>
+            <p style="font-size:11px; color:var(--cinza); letter-spacing:2px; text-transform:uppercase; margin-bottom:10px;">
+                {{ produto.categoria.nome }}
+            </p>
+            <h1 style="font-family:var(--fonte-titulo); font-size:38px; font-weight:300; margin-bottom:15px; line-height:1.2;">
+                {{ produto.nome }}
+            </h1>
+
+            <!-- PREÇO -->
+            <div style="margin-bottom:25px;">
+                {% if produto.preco_promocional %}
+                <p style="text-decoration:line-through; color:var(--cinza); font-size:16px; margin-bottom:5px;">
+                    R$ {{ produto.preco_venda }}
+                </p>
+                {% endif %}
+                <p style="font-size:36px; color:var(--dourado); font-weight:500;">
+                    R$ {{ produto.preco_atual }}
+                </p>
+                <p style="font-size:13px; color:var(--cinza); margin-top:5px;">
+                    ou 3x de R$ {% widthratio produto.preco_atual 3 1 %} sem juros
+                </p>
+            </div>
+
+            <!-- DESCRIÇÃO CURTA -->
+            <p style="font-size:15px; color:#555; line-height:1.8; margin-bottom:25px;">
+                {{ produto.descricao_curta }}
+            </p>
+
+            <!-- DETALHES -->
+            {% if produto.material %}
+            <div style="background:var(--cinza-claro); padding:15px 20px; margin-bottom:25px; border-left:3px solid var(--dourado);">
+                <p style="font-size:13px; color:var(--cinza);">
+                    <i class="fa fa-gem" style="color:var(--dourado);"></i>
+                    <strong>Material:</strong> {{ produto.material }}
+                </p>
+                {% if produto.dimensoes %}
+                <p style="font-size:13px; color:var(--cinza); margin-top:5px;">
+                    <i class="fa fa-ruler" style="color:var(--dourado);"></i>
+                    <strong>Dimensões:</strong> {{ produto.dimensoes }}
+                </p>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- ADICIONAR AO CARRINHO -->
+            <form method="post" action="{% url 'pedidos:adicionar_carrinho' produto.id %}">
+                {% csrf_token %}
+                <div style="display:flex; align-items:center; gap:15px; margin-bottom:20px;">
+                    <label style="font-size:12px; letter-spacing:1px; text-transform:uppercase;">Quantidade:</label>
+                    <div style="display:flex; align-items:center; border:1px solid var(--dourado-claro);">
+                        <button type="button" onclick="ajustarQtd(-1)"
+                            style="padding:10px 15px; background:none; border:none; cursor:pointer; font-size:16px; color:var(--dourado);">−</button>
+                        <input type="number" name="quantidade" id="quantidade" value="1" min="1" max="10"
+                            style="width:50px; text-align:center; border:none; font-family:var(--fonte-corpo); font-size:15px; outline:none;">
+                        <button type="button" onclick="ajustarQtd(1)"
+                            style="padding:10px 15px; background:none; border:none; cursor:pointer; font-size:16px; color:var(--dourado);">+</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary"
+                    style="width:100%; padding:18px; font-size:14px; margin-bottom:12px;">
+                    <i class="fa fa-bag-shopping"></i> Adicionar ao Carrinho
+                </button>
+            </form>
+
+            <a href="{% url 'pedidos:checkout' %}" class="btn-outline"
+               style="width:100%; text-align:center; display:block; padding:16px; font-size:14px;">
+                Comprar Agora
+            </a>
+
+            <!-- SELOS DE CONFIANÇA -->
+            <div style="display:flex; gap:20px; margin-top:25px; padding-top:25px; border-top:1px solid var(--dourado-claro);">
+                <div style="text-align:center; flex:1;">
+                    <i class="fa fa-lock" style="color:var(--dourado); font-size:20px;"></i>
+                    <p style="font-size:11px; color:var(--cinza); margin-top:5px;">Compra Segura</p>
+                </div>
+                <div style="text-align:center; flex:1;">
+                    <i class="fa fa-truck" style="color:var(--dourado); font-size:20px;"></i>
+                    <p style="font-size:11px; color:var(--cinza); margin-top:5px;">Entrega Garantida</p>
+                </div>
+                <div style="text-align:center; flex:1;">
+                    <i class="fa fa-rotate-left" style="color:var(--dourado); font-size:20px;"></i>
+                    <p style="font-size:11px; color:var(--cinza); margin-top:5px;">Troca em 7 dias</p>
+                </div>
+                <div style="text-align:center; flex:1;">
+                    <i class="fa fa-certificate" style="color:var(--dourado); font-size:20px;"></i>
+                    <p style="font-size:11px; color:var(--cinza); margin-top:5px;">Qualidade Garantida</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DESCRIÇÃO COMPLETA -->
+    <div style="margin-top:60px; padding-top:40px; border-top:1px solid var(--dourado-claro);">
+        <h2 style="font-family:var(--fonte-titulo); font-size:30px; font-weight:300; margin-bottom:20px;">
+            Descrição do Produto
+        </h2>
+        <p style="font-size:15px; color:#555; line-height:2; max-width:700px;">
+            {{ produto.descricao }}
+        </p>
+    </div>
+
+</section>
+
+<script>
+function trocarImagem(src) {
+    document.getElementById('imagem-principal').src = src;
+}
+function ajustarQtd(delta) {
+    const input = document.getElementById('quantidade');
+    const novo = Math.min(10, Math.max(1, parseInt(input.value) + delta));
+    input.value = novo;
+}
+</script>
+
+{% endblock %}

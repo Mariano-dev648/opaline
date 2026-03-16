@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Catálogo — Opaline{% endblock %}
+
+{% block content %}
+
+<!-- BANNER DO CATÁLOGO -->
+<section style="background:linear-gradient(135deg, var(--cinza-claro), var(--branco-off)); padding:60px; text-align:center;">
+    <h1 style="font-family:var(--fonte-titulo); font-size:48px; font-weight:300; margin-bottom:10px;">
+        Nossa <em style="color:var(--dourado); font-style:italic;">Coleção</em>
+    </h1>
+    <p style="color:var(--cinza); font-size:14px; letter-spacing:2px; text-transform:uppercase;">
+        Bijuterias e Folheados Exclusivos
+    </p>
+</section>
+
+<!-- FILTROS + PRODUTOS -->
+<section class="section">
+    <div style="display:grid; grid-template-columns:240px 1fr; gap:40px; align-items:start;">
+
+        <!-- SIDEBAR FILTROS -->
+        <div style="position:sticky; top:100px;">
+            <h3 style="font-family:var(--fonte-titulo); font-size:22px; margin-bottom:20px;">Categorias</h3>
+            <ul style="list-style:none;">
+                <li style="margin-bottom:12px;">
+                    <a href="{% url 'produtos:catalogo' %}"
+                       style="text-decoration:none; color:var(--texto); font-size:14px; letter-spacing:1px; display:flex; justify-content:space-between; padding-bottom:10px; border-bottom:1px solid var(--dourado-claro); transition:color 0.3s;"
+                       onmouseover="this.style.color='var(--dourado)'"
+                       onmouseout="this.style.color='var(--texto)'">
+                        <span>Todos os produtos</span>
+                        <span style="color:var(--dourado);">{{ produtos|length }}</span>
+                    </a>
+                </li>
+                {% for categoria in categorias %}
+                <li style="margin-bottom:12px;">
+                    <a href="?categoria={{ categoria.slug }}"
+                       style="text-decoration:none; color:{% if request.GET.categoria == categoria.slug %}var(--dourado){% else %}var(--texto){% endif %}; font-size:14px; letter-spacing:1px; display:flex; justify-content:space-between; padding-bottom:10px; border-bottom:1px solid var(--dourado-claro); transition:color 0.3s;"
+                       onmouseover="this.style.color='var(--dourado)'"
+                       onmouseout="this.style.color='{% if request.GET.categoria == categoria.slug %}var(--dourado){% else %}var(--texto){% endif %}'">
+                        <span>{{ categoria.nome }}</span>
+                        <span style="color:var(--dourado);">{{ categoria.produtos.count }}</span>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+
+            <div style="margin-top:35px; padding:20px; background:var(--cinza-claro); border-left:3px solid var(--dourado);">
+                <p style="font-size:13px; color:var(--cinza); line-height:1.8;">
+                    <i class="fa fa-truck" style="color:var(--dourado);"></i>
+                    Frete grátis acima de <strong>R$ 199</strong>
+                </p>
+                <p style="font-size:13px; color:var(--cinza); margin-top:8px; line-height:1.8;">
+                    <i class="fa fa-lock" style="color:var(--dourado);"></i>
+                    Compra 100% segura
+                </p>
+            </div>
+        </div>
+
+        <!-- GRADE DE PRODUTOS -->
+        <div>
+            <!-- BARRA DE ORDENAÇÃO -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; padding-bottom:15px; border-bottom:1px solid var(--dourado-claro);">
+                <p style="font-size:13px; color:var(--cinza);">
+                    <strong style="color:var(--texto);">{{ produtos|length }}</strong> produtos encontrados
+                </p>
+                <select onchange="ordenar(this.value)"
+                    style="padding:8px 15px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:13px; outline:none; color:var(--texto);">
+                    <option value="">Ordenar por</option>
+                    <option value="menor">Menor preço</option>
+                    <option value="maior">Maior preço</option>
+                    <option value="novo">Mais recentes</option>
+                </select>
+            </div>
+
+            <!-- PRODUTOS -->
+            <div class="produtos-grid" id="produtos-grid">
+                {% for produto in produtos %}
+                <div class="produto-card" data-preco="{{ produto.preco_atual }}" data-data="{{ produto.criado_em|date:'U' }}">
+                    {% if produto.mais_vendido %}
+                    <span class="produto-badge">Mais Vendido</span>
+                    {% endif %}
+                    {% if produto.preco_promocional %}
+                    <span class="produto-badge" style="left:auto; right:15px; background:#c0392b;">Promoção</span>
+                    {% endif %}
+
+                    <a href="{% url 'produtos:detalhe' produto.slug %}">
+                        <img src="{{ produto.imagem_principal.url }}" alt="{{ produto.nome }}"
+                             onerror="this.src='https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=400&q=80'">
+                    </a>
+                    <div class="produto-info">
+                        <p style="font-size:11px; color:var(--cinza); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:5px;">
+                            {{ produto.categoria.nome }}
+                        </p>
+                        <h3 class="produto-nome">{{ produto.nome }}</h3>
+                        <p style="font-size:13px; color:var(--cinza); margin:5px 0 10px; line-height:1.5;">
+                            {{ produto.descricao_curta|truncatechars:60 }}
+                        </p>
+                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
+                            <span class="produto-preco">R$ {{ produto.preco_atual }}</span>
+                            {% if produto.preco_promocional %}
+                            <span style="text-decoration:line-through; color:var(--cinza); font-size:13px;">
+                                R$ {{ produto.preco_venda }}
+                            </span>
+                            {% endif %}
+                        </div>
+                        <div style="display:flex; gap:10px;">
+                            <a href="{% url 'produtos:detalhe' produto.slug %}" class="btn-outline"
+                               style="padding:10px 15px; font-size:11px; flex:1; text-align:center;">
+                                Ver Detalhes
+                            </a>
+                            <form method="post" action="{% url 'pedidos:adicionar_carrinho' produto.id %}" style="flex:1;">
+                                {% csrf_token %}
+                                <input type="hidden" name="quantidade" value="1">
+                                <button type="submit" class="btn-primary"
+                                    style="width:100%; padding:10px; font-size:11px;">
+                                    <i class="fa fa-bag-shopping"></i> Comprar
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div style="grid-column:1/-1; text-align:center; padding:80px 0;">
+                    <i class="fa fa-gem" style="font-size:50px; color:var(--dourado-claro);"></i>
+                    <p style="margin-top:20px; color:var(--cinza); font-size:16px;">
+                        Nenhum produto encontrado nesta categoria.
+                    </p>
+                    <a href="{% url 'produtos:catalogo' %}" class="btn-primary" style="margin-top:20px;">
+                        Ver todos os produtos
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+function ordenar(valor) {
+    const grid = document.getElementById('produtos-grid');
+    const cards = Array.from(grid.querySelectorAll('.produto-card'));
+    cards.sort((a, b) => {
+        if (valor === 'menor') return parseFloat(a.dataset.preco) - parseFloat(b.dataset.preco);
+        if (valor === 'maior') return parseFloat(b.dataset.preco) - parseFloat(a.dataset.preco);
+        if (valor === 'novo')  return parseInt(b.dataset.data) - parseInt(a.dataset.data);
+        return 0;
+    });
+    cards.forEach(card => grid.appendChild(card));
+}
+</script>
+
+{% endblock %}
