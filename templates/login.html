@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Login — Opaline{% endblock %}
+{% block content %}
+
+<section style="min-height:80vh; display:flex; align-items:center; justify-content:center; background:var(--branco-off);">
+    <div style="background:white; padding:50px; width:100%; max-width:440px; box-shadow:0 10px 40px rgba(0,0,0,0.08);">
+
+        <div style="text-align:center; margin-bottom:35px;">
+            <h2 style="font-family:var(--fonte-titulo); font-size:36px; font-weight:300;">
+                <span style="color:var(--dourado)">O</span>paline
+            </h2>
+            <p style="color:var(--cinza); font-size:14px; margin-top:8px;">Acesse sua conta</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:12px; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px; color:var(--texto);">E-mail</label>
+                <input type="email" name="email" required placeholder="seu@email.com"
+                    style="width:100%; padding:14px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:14px; outline:none; transition:border 0.3s;"
+                    onfocus="this.style.borderColor='var(--dourado)'"
+                    onblur="this.style.borderColor='var(--dourado-claro)'">
+            </div>
+
+            <div style="margin-bottom:25px;">
+                <label style="display:block; font-size:12px; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px; color:var(--texto);">Senha</label>
+                <input type="password" name="senha" required placeholder="••••••••"
+                    style="width:100%; padding:14px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:14px; outline:none; transition:border 0.3s;"
+                    onfocus="this.style.borderColor='var(--dourado)'"
+                    onblur="this.style.borderColor='var(--dourado-claro)'">
+            </div>
+
+            <button type="submit" class="btn-primary" style="width:100%; padding:16px; font-size:13px;">
+                Entrar
+            </button>
+        </form>
+
+        <p style="text-align:center; margin-top:25px; font-size:13px; color:var(--cinza);">
+            Não tem conta?
+            <a href="{% url 'clientes:cadastro' %}" style="color:var(--dourado); text-decoration:none; font-weight:500;">Cadastre-se</a>
+        </p>
+    </div>
+</section>
+
+{% endblock %}

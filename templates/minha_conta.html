@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Minha Conta — Opaline{% endblock %}
+{% block content %}
+
+<section class="section" style="max-width:900px; margin:0 auto;">
+    <h2 class="section-title" style="text-align:left;">Olá, {{ request.user.first_name }} ✨</h2>
+    <div class="divisor" style="margin-left:0;"></div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:40px; margin-top:30px;">
+
+        <!-- PEDIDOS RECENTES -->
+        <div>
+            <h3 style="font-family:var(--fonte-titulo); font-size:24px; margin-bottom:20px;">Meus Pedidos</h3>
+            {% for pedido in pedidos %}
+            <div style="background:var(--cinza-claro); padding:20px; margin-bottom:15px; border-left:3px solid var(--dourado);">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-weight:500;">#{{ pedido.codigo|stringformat:"s"|slice:":8"|upper }}</span>
+                    <span style="font-size:13px;">{{ pedido.get_status_display }}</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:13px; color:var(--cinza);">
+                    <span>{{ pedido.criado_em|date:"d/m/Y" }}</span>
+                    <span style="color:var(--dourado); font-weight:500;">R$ {{ pedido.total }}</span>
+                </div>
+            </div>
+            {% empty %}
+            <p style="color:var(--cinza); font-size:14px;">Você ainda não fez nenhum pedido.</p>
+            {% endfor %}
+            <a href="{% url 'pedidos:meus_pedidos' %}" class="btn-outline" style="margin-top:15px; display:inline-block;">Ver todos os pedidos</a>
+        </div>
+
+        <!-- DADOS DA CONTA -->
+        <div>
+            <h3 style="font-family:var(--fonte-titulo); font-size:24px; margin-bottom:20px;">Meus Dados</h3>
+            <div style="background:var(--cinza-claro); padding:25px;">
+                <p style="margin-bottom:10px;"><strong>Nome:</strong> {{ request.user.get_full_name }}</p>
+                <p style="margin-bottom:10px;"><strong>E-mail:</strong> {{ request.user.email }}</p>
+                <p style="margin-bottom:10px;"><strong>Telefone:</strong> {{ request.user.telefone|default:"Não informado" }}</p>
+                <p><strong>CPF:</strong> {{ request.user.cpf|default:"Não informado" }}</p>
+            </div>
+
+            <h3 style="font-family:var(--fonte-titulo); font-size:24px; margin:25px 0 15px;">Endereços</h3>
+            {% for endereco in enderecos %}
+            <div style="background:var(--cinza-claro); padding:15px; margin-bottom:10px; font-size:13px;">
+                <p><strong>{{ endereco.nome_destinatario }}</strong></p>
+                <p>{{ endereco.logradouro }}, {{ endereco.numero }}</p>
+                <p>{{ endereco.bairro }} — {{ endereco.cidade }}/{{ endereco.estado }}</p>
+                <p>CEP: {{ endereco.cep }}</p>
+            </div>
+            {% empty %}
+            <p style="color:var(--cinza); font-size:14px;">Nenhum endereço cadastrado.</p>
+            {% endfor %}
+            <a href="{% url 'clientes:adicionar_endereco' %}" class="btn-outline" style="margin-top:15px; display:inline-block;">+ Adicionar Endereço</a>
+        </div>
+    </div>
+
+    <div style="margin-top:40px; padding-top:25px; border-top:1px solid var(--dourado-claro);">
+        <a href="{% url 'clientes:logout' %}" style="color:#e74c3c; font-size:13px; text-decoration:none;">
+            <i class="fa fa-right-from-bracket"></i> Sair da conta
+        </a>
+    </div>
+</section>
+
+{% endblock %}

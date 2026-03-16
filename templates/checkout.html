@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% block title %}Checkout — Opaline{% endblock %}
+{% block content %}
+
+<section class="section">
+    <h2 class="section-title">Finalizar Compra</h2>
+    <div class="divisor"></div>
+
+    <div style="display:grid; grid-template-columns:1fr 380px; gap:40px; align-items:start; margin-top:20px;">
+
+        <!-- ENDEREÇO -->
+        <div>
+            <h3 style="font-family:var(--fonte-titulo); font-size:26px; margin-bottom:25px;">Endereço de Entrega</h3>
+
+            <form method="post" action="{% url 'pedidos:finalizar_pedido' %}">
+                {% csrf_token %}
+
+                {% if enderecos %}
+                <div style="margin-bottom:30px;">
+                    <h4 style="font-size:14px; letter-spacing:1px; text-transform:uppercase; margin-bottom:15px;">Endereços salvos</h4>
+                    {% for endereco in enderecos %}
+                    <label style="display:flex; gap:15px; padding:15px; border:1px solid var(--dourado-claro); margin-bottom:10px; cursor:pointer;">
+                        <input type="radio" name="endereco_id" value="{{ endereco.id }}" {% if forloop.first %}checked{% endif %}>
+                        <div style="font-size:13px;">
+                            <p><strong>{{ endereco.nome_destinatario }}</strong></p>
+                            <p>{{ endereco.logradouro }}, {{ endereco.numero }} — {{ endereco.bairro }}</p>
+                            <p>{{ endereco.cidade }}/{{ endereco.estado }} — CEP: {{ endereco.cep }}</p>
+                        </div>
+                    </label>
+                    {% endfor %}
+                </div>
+                <p style="font-size:13px; color:var(--cinza); margin-bottom:20px;">Ou adicione um novo endereço:</p>
+                {% endif %}
+
+                <!-- NOVO ENDEREÇO -->
+                <div id="novo-endereco" {% if enderecos %}style="display:none;"{% endif %}>
+                    <div style="margin-bottom:15px;">
+                        <label style="display:block; font-size:12px; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px;">Nome do destinatário</label>
+                        <input type="text" name="nome_destinatario" placeholder="Quem vai receber?"
+                            style="width:100%; padding:14px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:14px; outline:none;">
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 2fr; gap:15px; margin-bottom:15px;">
+                        <div>
+                            <label style="display:block; font-size:12px; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px;">CEP</label>
+                            <input type="text" name="cep" placeholder="00000-000" id="cep-input"
+                                style="width:100%; padding:14px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:14px; outline:none;"
+                                oninput="buscarCEP(this)">
+                        </div>
+                        <div>
+                            <label style="display:block; font-size:12px; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px;">Logradouro</label>
+                            <input type="text" name="logradouro" id="logradouro" placeholder="Rua, Avenida..."
+                                style="width:100%; padding:14px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:14px; outline:none;">
+                        </div>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 2fr 1fr; gap:15px; margin-bottom:15px;">
+                        <div>
+                            <label style="display:block; font-size:12px; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px;">Número</label>
+                            <input type="text" name="numero" placeholder="Nº"
+                                style="width:100%; padding:14px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:14px; outline:none;">
+                        </div>
+                        <div>
+                            <label style="display:block; font-size:12px; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px;">Bairro</label>
+                            <input type="text" name="bairro" id="bairro" placeholder="Bairro"
+                                style="width:100%; padding:14px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:14px; outline:none;">
+                        </div>
+                        <div>
+                            <label style="display:block; font-size:12px; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px;">Complemento</label>
+                            <input type="text" name="complemento" placeholder="Apto, bloco..."
+                                style="width:100%; padding:14px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:14px; outline:none;">
+                        </div>
+                    </div>
+                    <div style="display:grid; grid-template-columns:2fr 1fr; gap:15px; margin-bottom:25px;">
+                        <div>
+                            <label style="display:block; font-size:12px; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px;">Cidade</label>
+                            <input type="text" name="cidade" id="cidade" placeholder="Cidade"
+                                style="width:100%; padding:14px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:14px; outline:none;">
+                        </div>
+                        <div>
+                            <label style="display:block; font-size:12px; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px;">Estado</label>
+                            <input type="text" name="estado" id="estado" placeholder="UF" maxlength="2"
+                                style="width:100%; padding:14px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:14px; outline:none; text-transform:uppercase;">
+                        </div>
+                    </div>
+                </div>
+
+                {% if enderecos %}
+                <button type="button" onclick="toggleNovoEndereco()" class="btn-outline" style="margin-bottom:25px;">
+                    + Usar novo endereço
+                </button>
+                {% endif %}
+
+                <button type="submit" class="btn-primary" style="width:100%; padding:18px; font-size:14px;">
+                    <i class="fa fa-lock"></i> Confirmar e Pagar com Pix
+                </button>
+            </form>
+        </div>
+
+        <!-- RESUMO -->
+        <div style="background:var(--cinza-claro); padding:30px; position:sticky; top:100px;">
+            <h3 style="font-family:var(--fonte-titulo); font-size:24px; margin-bottom:20px;">Resumo do Pedido</h3>
+            {% for item in carrinho %}
+            <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--dourado-claro); font-size:13px;">
+                <span>{{ item.quantidade }}x {{ item.nome }}</span>
+                <span>R$ {{ item.subtotal }}</span>
+            </div>
+            {% endfor %}
+            <div style="display:flex; justify-content:space-between; margin-top:20px; font-size:20px; font-weight:500;">
+                <span>Total</span>
+                <span style="color:var(--dourado);">R$ {{ carrinho.total }}</span>
+            </div>
+            <div style="margin-top:20px; padding:15px; background:white; border:1px solid var(--dourado-claro); text-align:center;">
+                <p style="font-size:13px; color:var(--cinza);">
+                    <i class="fa fa-lock" style="color:var(--dourado);"></i>
+                    Pagamento seguro via Mercado Pago
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+function toggleNovoEndereco() {
+    const div = document.getElementById('novo-endereco');
+    div.style.display = div.style.display === 'none' ? 'block' : 'none';
+}
+
+async function buscarCEP(input) {
+    let cep = input.value.replace(/\D/g, '');
+    if (cep.length === 8) {
+        const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        const data = await res.json();
+        if (!data.erro) {
+            document.getElementById('logradouro').value = data.logradouro;
+            document.getElementById('bairro').value = data.bairro;
+            document.getElementById('cidade').value = data.localidade;
+            document.getElementById('estado').value = data.uf;
+        }
+    }
+}
+</script>
+
+{% endblock %}

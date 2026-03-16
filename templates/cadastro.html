@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block title %}Cadastro — Opaline{% endblock %}
+{% block content %}
+
+<section style="min-height:80vh; display:flex; align-items:center; justify-content:center; background:var(--branco-off); padding:40px 20px;">
+    <div style="background:white; padding:50px; width:100%; max-width:520px; box-shadow:0 10px 40px rgba(0,0,0,0.08);">
+
+        <div style="text-align:center; margin-bottom:35px;">
+            <h2 style="font-family:var(--fonte-titulo); font-size:36px; font-weight:300;">
+                <span style="color:var(--dourado)">O</span>paline
+            </h2>
+            <p style="color:var(--cinza); font-size:14px; margin-top:8px;">Crie sua conta e aproveite nossas ofertas ✨</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:20px;">
+                <div>
+                    <label style="display:block; font-size:12px; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px;">Nome</label>
+                    <input type="text" name="first_name" required placeholder="Seu nome"
+                        style="width:100%; padding:14px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:14px; outline:none;"
+                        onfocus="this.style.borderColor='var(--dourado)'"
+                        onblur="this.style.borderColor='var(--dourado-claro)'">
+                </div>
+                <div>
+                    <label style="display:block; font-size:12px; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px;">Sobrenome</label>
+                    <input type="text" name="last_name" required placeholder="Seu sobrenome"
+                        style="width:100%; padding:14px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:14px; outline:none;"
+                        onfocus="this.style.borderColor='var(--dourado)'"
+                        onblur="this.style.borderColor='var(--dourado-claro)'">
+                </div>
+            </div>
+
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:12px; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px;">E-mail</label>
+                <input type="email" name="email" required placeholder="seu@email.com"
+                    style="width:100%; padding:14px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:14px; outline:none;"
+                    onfocus="this.style.borderColor='var(--dourado)'"
+                    onblur="this.style.borderColor='var(--dourado-claro)'">
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:20px;">
+                <div>
+                    <label style="display:block; font-size:12px; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px;">CPF</label>
+                    <input type="text" name="cpf" placeholder="000.000.000-00"
+                        style="width:100%; padding:14px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:14px; outline:none;"
+                        onfocus="this.style.borderColor='var(--dourado)'"
+                        onblur="this.style.borderColor='var(--dourado-claro)'"
+                        oninput="mascaraCPF(this)">
+                </div>
+                <div>
+                    <label style="display:block; font-size:12px; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px;">Telefone</label>
+                    <input type="text" name="telefone" placeholder="(00) 00000-0000"
+                        style="width:100%; padding:14px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:14px; outline:none;"
+                        onfocus="this.style.borderColor='var(--dourado)'"
+                        onblur="this.style.borderColor='var(--dourado-claro)'"
+                        oninput="mascaraTelefone(this)">
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:30px;">
+                <div>
+                    <label style="display:block; font-size:12px; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px;">Senha</label>
+                    <input type="password" name="senha" required placeholder="••••••••"
+                        style="width:100%; padding:14px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:14px; outline:none;"
+                        onfocus="this.style.borderColor='var(--dourado)'"
+                        onblur="this.style.borderColor='var(--dourado-claro)'">
+                </div>
+                <div>
+                    <label style="display:block; font-size:12px; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px;">Confirmar Senha</label>
+                    <input type="password" name="confirmar_senha" required placeholder="••••••••"
+                        style="width:100%; padding:14px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:14px; outline:none;"
+                        onfocus="this.style.borderColor='var(--dourado)'"
+                        onblur="this.style.borderColor='var(--dourado-claro)'">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary" style="width:100%; padding:16px; font-size:13px;">
+                Criar Conta
+            </button>
+        </form>
+
+        <p style="text-align:center; margin-top:25px; font-size:13px; color:var(--cinza);">
+            Já tem conta?
+            <a href="{% url 'clientes:login' %}" style="color:var(--dourado); text-decoration:none; font-weight:500;">Entrar</a>
+        </p>
+    </div>
+</section>
+
+<script>
+function mascaraCPF(input) {
+    let v = input.value.replace(/\D/g, '').substring(0, 11);
+    v = v.replace(/(\d{3})(\d)/, '$1.$2');
+    v = v.replace(/(\d{3})(\d)/, '$1.$2');
+    v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    input.value = v;
+}
+function mascaraTelefone(input) {
+    let v = input.value.replace(/\D/g, '').substring(0, 11);
+    v = v.replace(/(\d{2})(\d)/, '($1) $2');
+    v = v.replace(/(\d{5})(\d)/, '$1-$2');
+    input.value = v;
+}
+</script>
+
+{% endblock %}
