@@ -1,26 +1,57 @@
- # Ambiente virtual
-venv/
-env/
+# ============================================
+# OPALINE — .gitignore de produção
+# ============================================
 
-# Segredos — NUNCA subir
+# Variáveis de ambiente (NUNCA subir para o GitHub)
 .env
+.env.*
+.env.local
+.env.production
 *.env
 
 # Django
 *.pyc
 __pycache__/
+*.pyo
+*.pyd
 db.sqlite3
-media/
-logs/
+/media/
+/staticfiles/
+/static_root/
 
-# Sistema
+# Migrações geradas localmente (opcional manter)
+# **/migrations/*.py
+
+# Virtualenv
+venv/
+env/
+.venv/
+ENV/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Sistema operacional
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# IDEs
-.vscode/
-.idea/
-
-# Deploy
-staticfiles/
+# Logs
 *.log
+logs/
+
+# Testes e cobertura
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Arquivos sensíveis
+secrets.json
+credentials.json
+*.pem
+*.key
+*.p12
+
+# Railway / Docker
+.railway/
