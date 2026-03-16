@@ -1,15 +1,15 @@
 from pathlib import Path
 import environ
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Lê o .env automaticamente
 env = environ.Env()
 environ.Env.read_env(BASE_DIR / '.env')
 
 SECRET_KEY = env('SECRET_KEY')
 DEBUG = env.bool('DEBUG', default=False)
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1'])
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -18,10 +18,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Libs
     'rest_framework',
     'corsheaders',
-    # Apps Opaline
     'produtos',
     'pedidos',
     'clientes',
@@ -30,11 +28,11 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # arquivos estáticos seguro
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',  # proteção CSRF
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -86,22 +84,41 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Mercado Pago
+AUTH_USER_MODEL = 'clientes.Cliente'
+
 MP_ACCESS_TOKEN = env('MP_ACCESS_TOKEN')
 MP_PUBLIC_KEY = env('MP_PUBLIC_KEY')
 
-# Segurança extra (ativa em produção)
+CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+])
+
+# Segurança em produção
 if not DEBUG:
     SECURE_HSTS_SECONDS = 31536000
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
 
-    # Model de usuário customizado
-AUTH_USER_MODEL = 'clientes.Cliente'
-
-# Confia no domínio do ngrok
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:8000',
-    'http://127.0.0.1:8000',
-]
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'pagamentos': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+        'pedidos': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    },
+}
