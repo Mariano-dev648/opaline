@@ -12,7 +12,6 @@
 </head>
 <body>
 
-<!-- HEADER -->
 <header class="header">
     <div class="header-top">
         <span>✨ Frete grátis acima de R$ 199 | Parcele em até 3x sem juros</span>
@@ -30,12 +29,14 @@
         </ul>
         <div class="nav-icons">
             <a href="{% url 'clientes:login' %}"><i class="fa fa-user"></i></a>
-            <a href="{% url 'pedidos:carrinho' %}"><i class="fa fa-bag-shopping"></i> <span class="cart-count">0</span></a>
+            <a href="{% url 'pedidos:carrinho' %}">
+                <i class="fa fa-bag-shopping"></i>
+                <span class="cart-count">0</span>
+            </a>
         </div>
     </nav>
 </header>
 
-<!-- CONTEÚDO -->
 <main>
     {% if messages %}
         {% for message in messages %}
@@ -45,7 +46,6 @@
     {% block content %}{% endblock %}
 </main>
 
-<!-- FOOTER -->
 <footer class="footer">
     <div class="footer-grid">
         <div class="footer-brand">

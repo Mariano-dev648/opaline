@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Pedido Confirmado — Opaline{% endblock %}
+{% block content %}
+<section class="section" style="max-width:600px; margin:0 auto; text-align:center;">
+    <div style="font-size:70px; margin-bottom:20px;">✨</div>
+    <h2 class="section-title">Pedido Confirmado!</h2>
+    <p style="color:var(--cinza); margin-bottom:10px;">Pedido #{{ pedido.codigo|stringformat:"s"|slice:":8"|upper }}</p>
+    <p style="font-size:18px; margin-bottom:30px;">
+        Obrigada pela sua compra, <strong>{{ pedido.cliente.first_name }}</strong>!
+    </p>
+
+    <div style="background:var(--cinza-claro); padding:30px; text-align:left; margin-bottom:30px;">
+        <h4 style="font-family:var(--fonte-titulo); font-size:20px; margin-bottom:15px;">Resumo do Pedido</h4>
+        {% for item in pedido.itens.all %}
+        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--dourado-claro);">
+            <span>{{ item.quantidade }}x {{ item.produto.nome }}</span>
+            <span>R$ {{ item.subtotal }}</span>
+        </div>
+        {% endfor %}
+        <div style="display:flex; justify-content:space-between; margin-top:15px; font-size:18px; font-weight:500;">
+            <span>Total</span>
+            <span style="color:var(--dourado);">R$ {{ pedido.total }}</span>
+        </div>
+    </div>
+
+    <p style="font-size:14px; color:var(--cinza); margin-bottom:25px;">
+        Você receberá atualizações do pedido no e-mail <strong>{{ pedido.cliente.email }}</strong>
+    </p>
+
+    <a href="{% url 'pedidos:meus_pedidos' %}" class="btn-primary">Ver Meus Pedidos</a>
+    <a href="{% url 'produtos:home' %}" class="btn-outline" style="margin-left:10px;">Voltar à Loja</a>
+</section>
+{% endblock %}

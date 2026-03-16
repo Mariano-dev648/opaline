@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}Carrinho — Opaline{% endblock %}
+{% block content %}
+<section class="section">
+    <h2 class="section-title">Meu Carrinho</h2>
+    <div class="divisor"></div>
+
+    {% if carrinho|length == 0 %}
+    <div style="text-align:center; padding: 60px 0;">
+        <i class="fa fa-bag-shopping" style="font-size:60px; color:var(--dourado-claro);"></i>
+        <p style="margin-top:20px; color:var(--cinza); font-size:16px;">Seu carrinho está vazio</p>
+        <a href="{% url 'produtos:catalogo' %}" class="btn-primary" style="margin-top:25px;">Ver Produtos</a>
+    </div>
+    {% else %}
+    <div style="display:grid; grid-template-columns: 1fr 350px; gap:40px; align-items:start;">
+
+        <!-- ITENS -->
+        <div>
+            {% for item in carrinho %}
+            <div style="display:flex; gap:20px; padding:25px 0; border-bottom:1px solid var(--dourado-claro); align-items:center;">
+                <img src="{{ item.imagem }}" style="width:100px; height:100px; object-fit:cover; border-radius:2px;">
+                <div style="flex:1;">
+                    <h3 style="font-family:var(--fonte-titulo); font-size:20px;">{{ item.nome }}</h3>
+                    <p style="color:var(--dourado); font-size:18px; margin-top:5px;">R$ {{ item.preco }}</p>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <form method="post" action="{% url 'pedidos:atualizar_carrinho' item.produto_id %}">
+                        {% csrf_token %}
+                        <input type="number" name="quantidade" value="{{ item.quantidade }}" min="1"
+                            style="width:60px; padding:8px; border:1px solid var(--dourado-claro); text-align:center;"
+                            onchange="this.form.submit()">
+                    </form>
+                    <a href="{% url 'pedidos:remover_carrinho' item.produto_id %}"
+                        style="color:#e74c3c; font-size:18px;">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                </div>
+                <p style="font-weight:500; min-width:100px; text-align:right;">R$ {{ item.subtotal }}</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- RESUMO -->
+        <div style="background:var(--cinza-claro); padding:30px; position:sticky; top:100px;">
+            <h3 style="font-family:var(--fonte-titulo); font-size:24px; margin-bottom:20px;">Resumo</h3>
+            <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                <span>Subtotal</span>
+                <span>R$ {{ carrinho.total }}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                <span>Frete</span>
+                <span style="color:var(--dourado);">Grátis acima de R$199</span>
+            </div>
+            <hr style="border-color:var(--dourado-claro); margin:20px 0;">
+            <div style="display:flex; justify-content:space-between; font-size:20px; font-weight:500; margin-bottom:25px;">
+                <span>Total</span>
+                <span style="color:var(--dourado);">R$ {{ carrinho.total }}</span>
+            </div>
+            <a href="{% url 'pedidos:checkout' %}" class="btn-primary" style="width:100%; text-align:center; display:block;">
+                Finalizar Compra
+            </a>
+            <a href="{% url 'produtos:catalogo' %}" class="btn-outline" style="width:100%; text-align:center; display:block; margin-top:10px;">
+                Continuar Comprando
+            </a>
+            <p style="text-align:center; margin-top:20px; font-size:12px; color:var(--cinza);">
+                <i class="fa fa-lock"></i> Pagamento 100% seguro via Mercado Pago
+            </p>
+        </div>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

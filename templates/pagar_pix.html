@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Pagar com Pix — Opaline{% endblock %}
+{% block content %}
+<section class="section" style="max-width:600px; margin:0 auto; text-align:center;">
+    <h2 class="section-title">Pague com <span style="color:var(--dourado)">Pix</span></h2>
+    <p style="color:var(--cinza); margin-bottom:10px;">Pedido #{{ pedido.codigo|stringformat:"s"|slice:":8"|upper }}</p>
+    <p style="font-size:24px; color:var(--dourado); font-weight:500; margin-bottom:30px;">R$ {{ pedido.total }}</p>
+
+    <div style="background:var(--cinza-claro); padding:40px; border-radius:4px;">
+
+        {% if pagamento.pix_qr_code %}
+        <p style="margin-bottom:20px; font-size:14px; color:var(--cinza);">Escaneie o QR Code com seu banco</p>
+        <img src="data:image/png;base64,{{ pagamento.pix_qr_code }}"
+             style="width:220px; height:220px; margin:0 auto 25px; display:block; border:3px solid var(--dourado); padding:10px; background:white;">
+        {% endif %}
+
+        <p style="font-size:14px; margin-bottom:10px; color:var(--cinza);">Ou copie o código Pix:</p>
+        <div style="background:white; padding:15px; border:1px solid var(--dourado-claro); border-radius:2px; margin-bottom:15px; word-break:break-all; font-size:12px; color:#555;">
+            {{ pagamento.pix_copia_cola }}
+        </div>
+        <button onclick="copiarPix()" class="btn-primary" style="width:100%;">
+            <i class="fa fa-copy"></i> Copiar código Pix
+        </button>
+
+        <div style="margin-top:25px; padding:15px; background:#fff8e1; border-left:3px solid var(--dourado);">
+            <p style="font-size:13px; color:#856404;">
+                ⏱️ Este Pix expira em <strong>30 minutos</strong>.<br>
+                Após o pagamento, seu pedido será confirmado automaticamente.
+            </p>
+        </div>
+    </div>
+
+    <p style="margin-top:25px; font-size:13px; color:var(--cinza);">
+        <i class="fa fa-lock"></i> Pagamento processado com segurança pelo Mercado Pago
+    </p>
+</section>
+
+<script>
+function copiarPix() {
+    const codigo = "{{ pagamento.pix_copia_cola }}";
+    navigator.clipboard.writeText(codigo).then(() => {
+        alert('Código Pix copiado! Cole no seu banco para pagar. ✅');
+    });
+}
+</script>
+{% endblock %}

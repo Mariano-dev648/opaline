@@ -15,7 +15,9 @@
         <a href="#destaques" class="btn-outline">Destaques</a>
     </div>
     <div class="hero-image">
-        <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=500&q=80" alt="Bijuterias folheadas Opaline"style="width:420px; height:500px; object-fit:cover; border-radius: 4px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); margin-top: 40px;"
+        <img src="https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=500&q=80"
+             alt="Bijuterias folheadas Opaline"
+             style="width:420px; height:500px; object-fit:cover; border-radius:4px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); margin-top:40px;">
     </div>
 </section>
 
@@ -27,7 +29,7 @@
         <p>Seus dados protegidos com criptografia</p>
     </div>
     <div class="confianca-item">
-        <i class="fa fa-pix"></i>
+        <i class="fa fa-money-bill"></i>
         <h4>Pix & Cartão</h4>
         <p>Pagamento via Pix com desconto especial</p>
     </div>
@@ -61,17 +63,19 @@
                 <p style="font-size:12px; color:var(--cinza); letter-spacing:1px; text-transform:uppercase;">{{ produto.categoria }}</p>
                 <h3 class="produto-nome">{{ produto.nome }}</h3>
                 <p class="produto-preco">R$ {{ produto.preco_atual }}</p>
-                <a href="{% url 'produtos:detalhe' produto.slug %}" class="btn-primary" style="margin-top:15px; padding: 12px 25px; font-size:12px;">Ver Detalhes</a>
+                <a href="{% url 'produtos:detalhe' produto.slug %}" class="btn-primary" style="margin-top:15px; padding:12px 25px; font-size:12px;">Ver Detalhes</a>
             </div>
         </div>
         {% empty %}
-        <p style="text-align:center; color:var(--cinza); grid-column: 1/-1;">Em breve novos produtos chegando ✨</p>
+        <p style="text-align:center; color:var(--cinza); grid-column:1/-1; padding:40px 0;">
+            ✨ Em breve novos produtos chegando
+        </p>
         {% endfor %}
     </div>
 </section>
 
-<!-- BANNER INSTITUCIONAL -->
-<section style="background: linear-gradient(135deg, #2C2C2C, #1a1a1a); padding: 80px 60px; text-align:center; color:white;">
+<!-- BANNER -->
+<section style="background:linear-gradient(135deg, #2C2C2C, #1a1a1a); padding:80px 60px; text-align:center; color:white;">
     <h2 style="font-family:var(--fonte-titulo); font-size:46px; font-weight:300; margin-bottom:15px;">
         Folheadas a <span style="color:var(--dourado)">Ouro 18k</span>
     </h2>
