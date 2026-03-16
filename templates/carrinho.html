@@ -24,13 +24,13 @@
                     <p style="color:var(--dourado); font-size:18px; margin-top:5px;">R$ {{ item.preco }}</p>
                 </div>
                 <div style="display:flex; align-items:center; gap:10px;">
-                    <form method="post" action="{% url 'pedidos:atualizar_carrinho' item.produto_id %}">
+                    <form method="post" action="/pedidos/carrinho/atualizar/{{ item.produto_id }}/">
                         {% csrf_token %}
                         <input type="number" name="quantidade" value="{{ item.quantidade }}" min="1"
                             style="width:60px; padding:8px; border:1px solid var(--dourado-claro); text-align:center;"
                             onchange="this.form.submit()">
                     </form>
-                    <a href="{% url 'pedidos:remover_carrinho' item.produto_id %}"
+                    <a href="/pedidos/carrinho/remover/{{ item.produto_id}}/"
                         style="color:#e74c3c; font-size:18px;">
                         <i class="fa fa-trash"></i>
                     </a>

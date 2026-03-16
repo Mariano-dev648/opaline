@@ -95,8 +95,8 @@ def finalizar_pedido(request):
             preco_custo=item['preco_custo'],
         )
 
-    carrinho.limpar()
     return redirect('pagamentos:pagar_pix', codigo=pedido.codigo)
+
 
 
 @login_required(login_url='/clientes/login/')

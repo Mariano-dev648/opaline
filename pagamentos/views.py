@@ -2,7 +2,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
-from django.utils import timezone
 from django.contrib import messages
 import mercadopago
 import json
@@ -18,53 +17,58 @@ logger = logging.getLogger(__name__)
 def pagar_pix(request, codigo):
     pedido = get_object_or_404(Pedido, codigo=codigo, cliente=request.user)
 
-    # Verifica se já tem pagamento
     pagamento_existente = Pagamento.objects.filter(pedido=pedido).first()
     if pagamento_existente and pagamento_existente.status == 'aprovado':
         return redirect('pagamentos:sucesso', codigo=codigo)
 
-    # Cria pagamento Pix no Mercado Pago
     sdk = mercadopago.SDK(settings.MP_ACCESS_TOKEN)
 
-    dados_pix = {
-        "transaction_amount": float(pedido.total),
-        "description": f"Opaline — Pedido #{str(pedido.codigo)[:8].upper()}",
-        "payment_method_id": "pix",
+    preference_data = {
+        "items": [
+            {
+                "title": f"Opaline — Pedido #{str(pedido.codigo)[:8].upper()}",
+                "quantity": 1,
+                "unit_price": float(pedido.total),
+                "currency_id": "BRL",
+            }
+        ],
         "payer": {
             "email": pedido.cliente.email,
-            "first_name": pedido.cliente.first_name,
-            "last_name": pedido.cliente.last_name,
-        }
+        },
+        "back_urls": {
+            "success": f"https://unpraising-fussily-ariella.ngrok-free.dev/pagamentos/sucesso/{pedido.codigo}/",
+            "failure": f"https://unpraising-fussily-ariella.ngrok-free.dev/pedidos/carrinho/",
+            "pending": f"https://unpraising-fussily-ariella.ngrok-free.dev/pagamentos/sucesso/{pedido.codigo}/",
+        },
+        "auto_return": "approved",
+        "payment_methods": {
+            "installments": 3,
+        },
     }
 
-    resultado = sdk.payment().create(dados_pix)
+    resultado = sdk.preference().create(preference_data)
     resposta = resultado.get("response", {})
 
     if resultado.get("status") == 201:
-        pix_data = resposta.get("point_of_interaction", {}).get("transaction_data", {})
-
         pagamento, _ = Pagamento.objects.update_or_create(
             pedido=pedido,
             defaults={
                 'metodo': 'pix',
                 'status': 'pendente',
-                'mp_payment_id': str(resposta.get("id", "")),
-                'mp_status': resposta.get("status", ""),
-                'pix_qr_code': pix_data.get("qr_code_base64", ""),
-                'pix_copia_cola': pix_data.get("qr_code", ""),
-                'pix_expiracao': timezone.now() + timezone.timedelta(minutes=30),
+                'mp_payment_id': resposta.get("id", ""),
                 'valor': pedido.total,
                 'resposta_mp': resposta,
             }
         )
 
-        return render(request, 'pagar_pix.html', {
-            'pedido': pedido,
-            'pagamento': pagamento,
-        })
+        from pedidos.carrinho import Carrinho as CarrinhoSession
+        CarrinhoSession(request).limpar()
+
+        init_point = resposta.get("sandbox_init_point") or resposta.get("init_point")
+        return redirect(init_point)
 
     logger.error(f"Erro MP: {resposta}")
-    messages.error(request, 'Erro ao gerar Pix. Tente novamente.')
+    messages.error(request, 'Erro ao gerar pagamento. Tente novamente.')
     return redirect('pedidos:checkout')
 
 

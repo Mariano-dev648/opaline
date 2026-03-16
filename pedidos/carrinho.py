@@ -13,6 +13,7 @@ class Carrinho:
         produto_id = str(produto.id)
         if produto_id not in self.carrinho:
             self.carrinho[produto_id] = {
+                'id': produto.id,
                 'quantidade': 0,
                 'preco': str(produto.preco_atual),
                 'preco_custo': str(produto.preco_custo),
@@ -46,9 +47,10 @@ class Carrinho:
         self.session.modified = True
 
     def __iter__(self):
-        for item in self.carrinho.values():
+        for produto_id, item in self.carrinho.items():
             item['preco'] = Decimal(item['preco'])
             item['subtotal'] = item['preco'] * item['quantidade']
+            item['produto_id'] = produto_id
             yield item
 
     def __len__(self):
