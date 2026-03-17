@@ -4,8 +4,14 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-env = environ.Env()
-environ.Env.read_env(BASE_DIR / '.env', overwrite=False)
+env = environ.Env(
+    SECRET_KEY=(str, ''),
+    DEBUG=(bool, False),
+)
+# Lê .env local se existir, ignora se não existir (Railway usa variáveis de ambiente)
+env_file = BASE_DIR / '.env'
+if env_file.exists():
+    environ.Env.read_env(env_file)
 
 
 SECRET_KEY = env('SECRET_KEY')
