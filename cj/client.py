@@ -9,17 +9,19 @@ CJ_BASE_URL = "https://developers.cjdropshipping.com/api2.0/v1"
 
 
 def get_cj_token():
-    """Obtém token CJ, usando cache para não repetir login."""
+    """Obtém token CJ usando API Key diretamente."""
     token = cache.get("cj_token")
     if token:
         return token
 
+    # Usa API Key para obter token
     response = requests.post(
         f"{CJ_BASE_URL}/authentication/getAccessToken",
         json={
             "email": settings.CJ_API_EMAIL,
-            "password": settings.CJ_API_PASSWORD,
-        }
+            "password": settings.CJ_API_KEY,  # ← usa API Key como senha
+        },
+        timeout=30
     )
     data = response.json()
 
@@ -39,7 +41,8 @@ def cj_get(endpoint, params=None):
     response = requests.get(
         f"{CJ_BASE_URL}{endpoint}",
         headers=headers,
-        params=params
+        params=params,
+        timeout=30  # ← adicionado
     )
     return response.json()
 
@@ -54,6 +57,7 @@ def cj_post(endpoint, payload):
     response = requests.post(
         f"{CJ_BASE_URL}{endpoint}",
         headers=headers,
-        json=payload
+        json=payload,
+        timeout=30  # ← adicionado
     )
     return response.json()

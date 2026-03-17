@@ -130,3 +130,11 @@ LOGGING = {
         },
     },
 }
+# CJdropshipping
+CJ_API_EMAIL = env('CJ_API_EMAIL', default='')
+CJ_API_PASSWORD = env('CJ_API_PASSWORD', default='')
+CJ_API_KEY = env('CJ_API_KEY', default='')
+
+# Loja
+STORE_NAME = env('STORE_NAME', default='Opaline')
+MARGEM_LUCRO = env('MARGEM_LUCRO', default='0.40')
