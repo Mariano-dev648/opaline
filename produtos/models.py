@@ -31,11 +31,11 @@ class Produto(models.Model):
     preco_promocional = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
     # Dropshipping — código do produto no fornecedor
-    codigo_fornecedor = models.CharField(max_length=100, unique=True)
+    codigo_fornecedor = models.CharField(max_length=200, unique=True)
     url_fornecedor = models.URLField(blank=True)
     
-    cj_product_id = models.CharField(max_length=100, blank=True)
-    cj_variant_id = models.CharField(max_length=100, blank=True)
+    cj_product_id = models.CharField(max_length=200, blank=True)
+    cj_variant_id = models.CharField(max_length=200, blank=True)
     cj_imagem_url = models.URLField(blank=True, max_length=500)
     fornecedor = models.CharField(max_length=20, default='CJ', choices=[
     ('CJ', 'CJdropshipping'),

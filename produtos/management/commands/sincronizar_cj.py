@@ -4,6 +4,7 @@ from decimal import Decimal
 from cj.client import cj_get, get_cj_token
 from produtos.models import Produto, Categoria
 import logging
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -54,6 +55,7 @@ class Command(BaseCommand):
                 break
 
             produtos_cj = data["data"]["list"]
+            time.sleep(2)
 
             for p in produtos_cj:
                 try:
