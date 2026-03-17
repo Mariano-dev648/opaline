@@ -33,6 +33,15 @@ class Produto(models.Model):
     # Dropshipping — código do produto no fornecedor
     codigo_fornecedor = models.CharField(max_length=100, unique=True)
     url_fornecedor = models.URLField(blank=True)
+    
+    cj_product_id = models.CharField(max_length=100, blank=True)
+    cj_variant_id = models.CharField(max_length=100, blank=True)
+    cj_imagem_url = models.URLField(blank=True, max_length=500)
+    fornecedor = models.CharField(max_length=20, default='CJ', choices=[
+    ('CJ', 'CJdropshipping'),
+    ('BR', 'Imagem Folheados'),
+    ('MANUAL', 'Manual'),
+    ])
 
     # Imagens
     imagem_principal = models.ImageField(upload_to='produtos/')

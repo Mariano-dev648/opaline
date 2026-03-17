@@ -1,1 +1,1 @@
-web: python manage.py migrate && python manage.py collectstatic --noinput && gunicorn core.wsgi:application
+web: python manage.py migrate && python manage.py sincronizar_cj --keyword "jewelry necklace" --paginas 3 && python manage.py collectstatic --noinput && gunicorn core.wsgi:application
