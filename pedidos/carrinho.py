@@ -19,7 +19,7 @@ class Carrinho:
                 'preco_custo': str(produto.preco_custo),
                 'nome': produto.nome,
                 'slug': produto.slug,
-                'imagem': produto.imagem_principal.url if produto.imagem_principal else '',
+                'imagem': produto.imagem_principal.url if produto.imagem_principal else (produto.cj_imagem_url or ''),
             }
         self.carrinho[produto_id]['quantidade'] += quantidade
         self.salvar()
