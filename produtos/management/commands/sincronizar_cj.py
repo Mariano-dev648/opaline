@@ -3,6 +3,7 @@ from django.utils.text import slugify
 from decimal import Decimal
 from cj.client import cj_get
 from produtos.models import Produto, Categoria
+from deep_translator import GoogleTranslator
 import logging
 import time
 
@@ -76,7 +77,12 @@ class Command(BaseCommand):
                     preco_custo_brl = round(preco_custo * DOLAR, 2)
                     preco_venda_brl = round(preco_venda * DOLAR, 2)
 
-                    nome = p.get('productNameEn', '')[:200]
+                    nome_en = p.get('productNameEn', '')
+                    try:
+                        nome = GoogleTranslator(source='en', target='pt').translate(nome_en)[:200]
+                    except Exception:
+                        nome = nome_en[:200]
+
                     cj_id = str(p.get('pid', ''))[:200]
                     imagem_url = p.get('productImage', '')
 

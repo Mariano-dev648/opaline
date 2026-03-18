@@ -21,18 +21,43 @@
         <!-- GALERIA -->
         <div>
             <div style="margin-bottom:15px; overflow:hidden;">
-                <img id="imagem-principal"
-                     src="{{ produto.imagem_principal.url }}"
-                     alt="{{ produto.nome }}"
-                     style="width:100%; height:520px; object-fit:cover; border-radius:2px; transition:transform 0.4s;"
-                     onmouseover="this.style.transform='scale(1.03)'"
-                     onmouseout="this.style.transform='scale(1)'">
+                {% if produto.imagem_principal %}
+                    <img id="imagem-principal"
+                         src="{{ produto.imagem_principal.url }}"
+                         alt="{{ produto.nome }}"
+                         style="width:100%; height:520px; object-fit:cover; border-radius:2px; transition:transform 0.4s;"
+                         onmouseover="this.style.transform='scale(1.03)'"
+                         onmouseout="this.style.transform='scale(1)'"
+                         onerror="this.src='https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=600&q=80'">
+                {% elif produto.cj_imagem_url %}
+                    <img id="imagem-principal"
+                         src="{{ produto.cj_imagem_url }}"
+                         alt="{{ produto.nome }}"
+                         style="width:100%; height:520px; object-fit:cover; border-radius:2px; transition:transform 0.4s;"
+                         onmouseover="this.style.transform='scale(1.03)'"
+                         onmouseout="this.style.transform='scale(1)'"
+                         onerror="this.src='https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=600&q=80'">
+                {% else %}
+                    <img id="imagem-principal"
+                         src="https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=600&q=80"
+                         alt="{{ produto.nome }}"
+                         style="width:100%; height:520px; object-fit:cover; border-radius:2px; transition:transform 0.4s;"
+                         onmouseover="this.style.transform='scale(1.03)'"
+                         onmouseout="this.style.transform='scale(1)'">
+                {% endif %}
             </div>
+
             {% if produto.imagens.all %}
             <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                {% if produto.imagem_principal %}
                 <img src="{{ produto.imagem_principal.url }}"
                      onclick="trocarImagem(this.src)"
                      style="width:80px; height:80px; object-fit:cover; cursor:pointer; border:2px solid var(--dourado); padding:2px;">
+                {% elif produto.cj_imagem_url %}
+                <img src="{{ produto.cj_imagem_url }}"
+                     onclick="trocarImagem(this.src)"
+                     style="width:80px; height:80px; object-fit:cover; cursor:pointer; border:2px solid var(--dourado); padding:2px;">
+                {% endif %}
                 {% for img in produto.imagens.all %}
                 <img src="{{ img.imagem.url }}"
                      onclick="trocarImagem(this.src)"
