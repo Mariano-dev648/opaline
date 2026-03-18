@@ -23,7 +23,7 @@ class ProdutoAdmin(admin.ModelAdmin):
     reandonly_fields = ['margem_display']
 
     def margem_display(self, obj):
-        margem = obj.margem_lucro
+        margem = float(obj.margem_lucro)
         cor = '#27ae60' if margem >= 35 else '#e74c3c'
         return format_html(
             '<span style="color: {}; font-weight: bold;">{:.1f}%</span>',
