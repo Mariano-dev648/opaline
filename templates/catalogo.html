@@ -90,7 +90,7 @@
                                  alt="{{ produto.nome }}"
                                  onerror="this.src='https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=400&q=80'">
                         {% elif produto.cj_imagem_url %}
-                            <img src="{{ produto.cj_imagem_url }}"
+                            <img src="https://images.weserv.nl/?url={{ produto.cj_imagem_url|urlencode }}&w=400&q=80"
                                  alt="{{ produto.nome }}"
                                  onerror="this.src='https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=400&q=80'">
                         {% else %}
