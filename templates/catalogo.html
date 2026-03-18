@@ -85,9 +85,20 @@
                     {% endif %}
 
                     <a href="{% url 'produtos:detalhe' produto.slug %}">
-                        <img src="{{ produto.imagem_principal.url }}" alt="{{ produto.nome }}"
-                             onerror="this.src='https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=400&q=80'">
+                        {% if produto.imagem_principal %}
+                            <img src="{{ produto.imagem_principal.url }}"
+                                 alt="{{ produto.nome }}"
+                                 onerror="this.src='https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=400&q=80'">
+                        {% elif produto.cj_imagem_url %}
+                            <img src="{{ produto.cj_imagem_url }}"
+                                 alt="{{ produto.nome }}"
+                                 onerror="this.src='https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=400&q=80'">
+                        {% else %}
+                            <img src="https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=400&q=80"
+                                 alt="{{ produto.nome }}">
+                        {% endif %}
                     </a>
+
                     <div class="produto-info">
                         <p style="font-size:11px; color:var(--cinza); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:5px;">
                             {{ produto.categoria.nome }}
