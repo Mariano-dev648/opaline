@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.utils.text import slugify
 from decimal import Decimal
-from cj.client import cj_get, get_cj_token
+from cj.client import cj_get
 from produtos.models import Produto, Categoria
 import logging
 import time
@@ -27,7 +27,6 @@ class Command(BaseCommand):
 
         self.stdout.write(f'🔍 Buscando produtos: "{keyword}"...')
 
-        # Pega ou cria categoria padrão
         categoria, _ = Categoria.objects.get_or_create(
             slug='importados',
             defaults={
@@ -59,22 +58,30 @@ class Command(BaseCommand):
 
             for p in produtos_cj:
                 try:
+                    # Corrige erro decimal.ConversionSyntax
                     preco_raw = p.get('sellPrice') or p.get('productPrice') or '0'
-                    preco_custo = Decimal(str(preco_raw))
+                    try:
+                        preco_custo = Decimal(str(float(preco_raw)))
+                    except Exception:
+                        continue
+
                     if preco_custo <= 0:
-                       continue
+                        continue
 
                     # Calcula preço de venda com margem
                     preco_venda = round(preco_custo / (1 - margem), 2)
 
-                    # Converte para BRL (aproximado)
+                    # Converte para BRL
                     DOLAR = Decimal('5.80')
                     preco_custo_brl = round(preco_custo * DOLAR, 2)
                     preco_venda_brl = round(preco_venda * DOLAR, 2)
 
                     nome = p.get('productNameEn', '')[:200]
-                    cj_id = p.get('pid', '')
+                    cj_id = str(p.get('pid', ''))[:200]
                     imagem_url = p.get('productImage', '')
+
+                    if not nome or not cj_id:
+                        continue
 
                     # Gera slug único
                     slug_base = slugify(nome)[:180]
@@ -90,7 +97,7 @@ class Command(BaseCommand):
                         defaults={
                             'nome': nome,
                             'slug': slug,
-                            'descricao': p.get('productNameEn', ''),
+                            'descricao': nome,
                             'descricao_curta': nome[:300],
                             'categoria': categoria,
                             'preco_custo': preco_custo_brl,

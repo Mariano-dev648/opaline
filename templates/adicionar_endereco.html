@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Adicionar Endereço — Opaline{% endblock %}
+
+{% block content %}
+
+<!-- BANNER -->
+<section style="background:linear-gradient(135deg, var(--cinza-claro), var(--branco-off)); padding:50px; text-align:center;">
+    <h1 style="font-family:var(--fonte-titulo); font-size:40px; font-weight:300; margin-bottom:10px;">
+        Novo <em style="color:var(--dourado); font-style:italic;">Endereço</em>
+    </h1>
+    <p style="color:var(--cinza); font-size:13px; letter-spacing:2px; text-transform:uppercase;">
+        Cadastre um endereço de entrega
+    </p>
+</section>
+
+<!-- FORMULÁRIO -->
+<section class="section">
+    <div style="max-width:600px; margin:0 auto;">
+
+        {% if messages %}
+        {% for message in messages %}
+        <div style="padding:15px 20px; margin-bottom:20px; background:{% if message.tags == 'error' %}#fdf0f0{% else %}#f0fdf4{% endif %}; border-left:4px solid {% if message.tags == 'error' %}#e74c3c{% else %}var(--dourado){% endif %}; font-size:14px; color:var(--texto);">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <form method="post" style="background:var(--branco-off); padding:40px; border:1px solid var(--dourado-claro);">
+            {% csrf_token %}
+
+            <!-- Nome do destinatário -->
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--cinza); margin-bottom:8px;">
+                    Nome do Destinatário *
+                </label>
+                <input type="text" name="nome_destinatario" required
+                    style="width:100%; padding:12px 15px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:14px; outline:none; box-sizing:border-box;"
+                    placeholder="Nome completo de quem vai receber">
+            </div>
+
+            <!-- CEP -->
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--cinza); margin-bottom:8px;">
+                    CEP *
+                </label>
+                <input type="text" name="cep" id="cep" required maxlength="9"
+                    style="width:100%; padding:12px 15px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:14px; outline:none; box-sizing:border-box;"
+                    placeholder="00000-000"
+                    oninput="buscarCep(this.value)">
+            </div>
+
+            <!-- Logradouro -->
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--cinza); margin-bottom:8px;">
+                    Logradouro *
+                </label>
+                <input type="text" name="logradouro" id="logradouro" required
+                    style="width:100%; padding:12px 15px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:14px; outline:none; box-sizing:border-box;"
+                    placeholder="Rua, Avenida, etc.">
+            </div>
+
+            <!-- Número + Complemento -->
+            <div style="display:grid; grid-template-columns:1fr 2fr; gap:15px; margin-bottom:20px;">
+                <div>
+                    <label style="display:block; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--cinza); margin-bottom:8px;">
+                        Número *
+                    </label>
+                    <input type="text" name="numero" required
+                        style="width:100%; padding:12px 15px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:14px; outline:none; box-sizing:border-box;"
+                        placeholder="123">
+                </div>
+                <div>
+                    <label style="display:block; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--cinza); margin-bottom:8px;">
+                        Complemento
+                    </label>
+                    <input type="text" name="complemento"
+                        style="width:100%; padding:12px 15px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:14px; outline:none; box-sizing:border-box;"
+                        placeholder="Apto, Bloco, etc.">
+                </div>
+            </div>
+
+            <!-- Bairro -->
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--cinza); margin-bottom:8px;">
+                    Bairro *
+                </label>
+                <input type="text" name="bairro" id="bairro" required
+                    style="width:100%; padding:12px 15px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:14px; outline:none; box-sizing:border-box;"
+                    placeholder="Seu bairro">
+            </div>
+
+            <!-- Cidade + Estado -->
+            <div style="display:grid; grid-template-columns:2fr 1fr; gap:15px; margin-bottom:30px;">
+                <div>
+                    <label style="display:block; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--cinza); margin-bottom:8px;">
+                        Cidade *
+                    </label>
+                    <input type="text" name="cidade" id="cidade" required
+                        style="width:100%; padding:12px 15px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:14px; outline:none; box-sizing:border-box;"
+                        placeholder="Sua cidade">
+                </div>
+                <div>
+                    <label style="display:block; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--cinza); margin-bottom:8px;">
+                        Estado *
+                    </label>
+                    <input type="text" name="estado" id="estado" required maxlength="2"
+                        style="width:100%; padding:12px 15px; border:1px solid var(--dourado-claro); font-family:var(--fonte-corpo); font-size:14px; outline:none; box-sizing:border-box; text-transform:uppercase;"
+                        placeholder="SP">
+                </div>
+            </div>
+
+            <!-- Botões -->
+            <div style="display:flex; gap:15px;">
+                <button type="submit" class="btn-primary" style="flex:2; padding:15px;">
+                    <i class="fa fa-plus"></i> Salvar Endereço
+                </button>
+                <a href="{% url 'clientes:minha_conta' %}" class="btn-outline"
+                   style="flex:1; padding:15px; text-align:center; text-decoration:none;">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</section>
+
+<script>
+async function buscarCep(cep) {
+    cep = cep.replace(/\D/g, '');
+    if (cep.length === 8) {
+        try {
+            const r = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+            const d = await r.json();
+            if (!d.erro) {
+                document.getElementById('logradouro').value = d.logradouro || '';
+                document.getElementById('bairro').value = d.bairro || '';
+                document.getElementById('cidade').value = d.localidade || '';
+                document.getElementById('estado').value = d.uf || '';
+            }
+        } catch(e) {}
+    }
+}
+</script>
+
+{% endblock %}
