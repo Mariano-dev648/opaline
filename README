@@ -1,16 +1,16 @@
-# 💎 Opaline — E-commerce de Bijuterias e Folheados
+# Opaline — E-commerce de Bijuterias e Folheados
 
 > Plataforma de e-commerce completa com dropshipping, integração de pagamentos e vitrine personalizada por IA.
 
 ---
 
-## 🌐 Demonstração
+## Demonstração
 
 > 🔗 Link de produção será adicionado após o deploy.
 
 ---
 
-## 📌 Sobre o Projeto
+## Sobre o Projeto
 
 A **Opaline** é uma loja virtual de bijuterias e folheados desenvolvida do zero com foco em segurança, experiência do usuário e automação de vendas via modelo de dropshipping.
 
@@ -18,7 +18,7 @@ O projeto foi construído com uma stack robusta e escalável, com atenção espe
 
 ---
 
-## ✨ Funcionalidades
+## Funcionalidades
 
 - **Vitrine personalizada** — catálogo com filtros por categoria e busca em tempo real
 - **Carrinho de compras** — via sessão segura, sem necessidade de login para navegar
@@ -32,7 +32,7 @@ O projeto foi construído com uma stack robusta e escalável, com atenção espe
 
 ---
 
-## 🛠️ Stack Tecnológica
+## Stack Tecnológica
 
 | Camada | Tecnologia |
 |--------|-----------|
@@ -49,7 +49,7 @@ O projeto foi construído com uma stack robusta e escalável, com atenção espe
 
 ---
 
-## 🏗️ Arquitetura do Projeto
+## Arquitetura do Projeto
 
 ```
 opaline/
@@ -66,7 +66,7 @@ opaline/
 
 ---
 
-## 🔒 Segurança
+## Segurança
 
 Este projeto implementa diversas camadas de proteção:
 
@@ -81,7 +81,7 @@ Este projeto implementa diversas camadas de proteção:
 
 ---
 
-## 📦 Modelos de Dados
+## Modelos de Dados
 
 ### Produto
 - Preço de custo, venda e promocional
@@ -103,7 +103,7 @@ Este projeto implementa diversas camadas de proteção:
 
 ---
 
-## 🚀 Como Executar Localmente
+## Como Executar Localmente
 
 ### Pré-requisitos
 
@@ -159,7 +159,7 @@ Acesse `http://127.0.0.1:8000` para a loja e `http://127.0.0.1:8000/admin` para 
 
 ---
 
-## 🌍 Deploy
+## Deploy
 
 O projeto está configurado para deploy no **Railway** com PostgreSQL gerenciado.
 
@@ -177,7 +177,7 @@ Variáveis de ambiente necessárias em produção:
 
 ---
 
-## 🗺️ Roadmap
+## Roadmap
 
 - [x] Estrutura base do projeto
 - [x] Models de produto, pedido, cliente e pagamento
@@ -195,7 +195,7 @@ Variáveis de ambiente necessárias em produção:
 
 ---
 
-## 📄 Licença
+## Licença
 
 Este projeto está sob licença privada. O código é disponibilizado apenas para fins de demonstração em portfólio. Uso comercial, cópia ou redistribuição não são permitidos sem autorização prévia.
 
