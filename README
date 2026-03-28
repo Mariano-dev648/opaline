@@ -1,0 +1,206 @@
+# 💎 Opaline — E-commerce de Bijuterias e Folheados
+
+> Plataforma de e-commerce completa com dropshipping, integração de pagamentos e vitrine personalizada por IA.
+
+---
+
+## 🌐 Demonstração
+
+> 🔗 Link de produção será adicionado após o deploy.
+
+---
+
+## 📌 Sobre o Projeto
+
+A **Opaline** é uma loja virtual de bijuterias e folheados desenvolvida do zero com foco em segurança, experiência do usuário e automação de vendas via modelo de dropshipping.
+
+O projeto foi construído com uma stack robusta e escalável, com atenção especial à proteção de dados da cliente, segurança nas transações financeiras e uma identidade visual elegante em branco e dourado.
+
+---
+
+## ✨ Funcionalidades
+
+- **Vitrine personalizada** — catálogo com filtros por categoria e busca em tempo real
+- **Carrinho de compras** — via sessão segura, sem necessidade de login para navegar
+- **Cadastro e autenticação** — sistema de clientes com CPF, endereço e histórico de pedidos
+- **Checkout completo** — preenchimento automático de CEP via ViaCEP
+- **Pagamentos integrados** — Mercado Pago com suporte a Pix, cartão de crédito e boleto
+- **Painel administrativo** — gestão de produtos, pedidos, clientes e margens de lucro
+- **Sistema de dropshipping** — controle de repasse ao fornecedor e rastreamento de pedidos
+- **Webhook de pagamentos** — confirmação automática de status via Mercado Pago
+- **Design responsivo** — experiência otimizada para mobile e desktop
+
+---
+
+## 🛠️ Stack Tecnológica
+
+| Camada | Tecnologia |
+|--------|-----------|
+| Backend | Python 3.12 + Django 6 |
+| Frontend | HTML5, CSS3, JavaScript |
+| Estilização | CSS customizado (Tailwind-inspired) |
+| Banco de dados (dev) | SQLite |
+| Banco de dados (produção) | PostgreSQL |
+| Pagamentos | Mercado Pago API |
+| Arquivos estáticos | WhiteNoise |
+| Servidor de produção | Gunicorn |
+| Deploy | Railway |
+| Versionamento | Git + GitHub |
+
+---
+
+## 🏗️ Arquitetura do Projeto
+
+```
+opaline/
+├── core/               # Configurações globais do Django
+├── produtos/           # Catálogo: modelos, views, URLs e admin
+├── pedidos/            # Carrinho, checkout e gestão de pedidos
+├── clientes/           # Cadastro, autenticação e endereços
+├── pagamentos/         # Integração Mercado Pago e webhooks
+├── templates/          # HTMLs (base, home, catálogo, checkout...)
+├── static/             # CSS, JS e imagens
+├── media/              # Upload de fotos dos produtos
+└── logs/               # Registros de auditoria
+```
+
+---
+
+## 🔒 Segurança
+
+Este projeto implementa diversas camadas de proteção:
+
+- Todas as credenciais e segredos armazenados em variáveis de ambiente (`.env`) — **nunca versionadas**
+- Proteção CSRF nativa do Django em todos os formulários
+- Validação e sanitização de dados de entrada
+- Modelo de usuário customizado com validação de CPF único
+- Headers de segurança em produção (HSTS, SSL redirect, Secure cookies)
+- Logs de auditoria em transações financeiras
+- Validação de webhooks do gateway de pagamento
+- `.gitignore` profissional bloqueando arquivos sensíveis
+
+---
+
+## 📦 Modelos de Dados
+
+### Produto
+- Preço de custo, venda e promocional
+- Cálculo automático de margem de lucro
+- Código do fornecedor para dropshipping
+- Galeria de imagens e categorias
+
+### Pedido
+- UUID único por pedido
+- Status rastreável (aguardando pagamento → entregue)
+- Controle de repasse ao fornecedor
+- Registro de custo e lucro por transação
+
+### Pagamento
+- Integração completa com Mercado Pago
+- Suporte a Pix, cartão e boleto
+- Armazenamento seguro da resposta do gateway
+- Atualização automática via webhook
+
+---
+
+## 🚀 Como Executar Localmente
+
+### Pré-requisitos
+
+- Python 3.12+
+- Git
+
+### Instalação
+
+```bash
+# Clone o repositório
+git clone https://github.com/Mariano-dev648/opaline.git
+cd opaline
+
+# Crie e ative o ambiente virtual
+python -m venv venv
+venv\Scripts\activate       # Windows
+# source venv/bin/activate  # Linux/Mac
+
+# Instale as dependências
+pip install -r requirements.txt
+```
+
+### Configuração
+
+Crie um arquivo `.env` na raiz do projeto com base no exemplo abaixo:
+
+```env
+SECRET_KEY=sua-secret-key-aqui
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+DATABASE_URL=sqlite:///db.sqlite3
+
+# Credenciais do Mercado Pago (obtenha em mercadopago.com.br/developers)
+MP_ACCESS_TOKEN=seu-access-token
+MP_PUBLIC_KEY=sua-public-key
+
+# E-mail para notificações (opcional em desenvolvimento)
+EMAIL_HOST_USER=seu-email@gmail.com
+EMAIL_HOST_PASSWORD=sua-senha-de-app
+
+STORE_NAME=Opaline
+```
+
+### Executando
+
+```bash
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+```
+
+Acesse `http://127.0.0.1:8000` para a loja e `http://127.0.0.1:8000/admin` para o painel.
+
+---
+
+## 🌍 Deploy
+
+O projeto está configurado para deploy no **Railway** com PostgreSQL gerenciado.
+
+Variáveis de ambiente necessárias em produção:
+
+| Variável | Descrição |
+|----------|-----------|
+| `SECRET_KEY` | Chave secreta do Django |
+| `DEBUG` | `False` em produção |
+| `ALLOWED_HOSTS` | Domínio do Railway |
+| `DATABASE_URL` | Gerada automaticamente pelo Railway |
+| `MP_ACCESS_TOKEN` | Token de produção do Mercado Pago |
+| `MP_PUBLIC_KEY` | Public key de produção do Mercado Pago |
+| `CSRF_TRUSTED_ORIGINS` | URL do domínio com `https://` |
+
+---
+
+## 🗺️ Roadmap
+
+- [x] Estrutura base do projeto
+- [x] Models de produto, pedido, cliente e pagamento
+- [x] Admin personalizado com indicadores de margem
+- [x] Frontend com design branco e dourado
+- [x] Sistema de carrinho via sessão
+- [x] Cadastro e autenticação de clientes
+- [x] Checkout com preenchimento automático de CEP
+- [x] Integração com Mercado Pago
+- [x] Webhook de confirmação de pagamento
+- [x] Deploy no Railway
+- [ ] Vitrine personalizada por IA (em desenvolvimento)
+- [ ] Notificações de pedido por e-mail
+- [ ] Painel de relatórios de vendas e margem
+
+---
+
+## 📄 Licença
+
+Este projeto está sob licença privada. O código é disponibilizado apenas para fins de demonstração em portfólio. Uso comercial, cópia ou redistribuição não são permitidos sem autorização prévia.
+
+---
+
+<p align="center">
+  Desenvolvido por <a href="https://github.com/Mariano-dev648">Mariano</a>
+</p>
